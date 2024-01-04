@@ -10,6 +10,7 @@ import {
 import checkAuth from './utils/checkAuth.js';
 import * as UserController from './controllers/UserController.js';
 import * as PostController from './controllers/PostController.js';
+import handleValidationErrors from './validations/handleValidationErrors.js';
 
 //MongoDB+Mongoose
 mongoose
@@ -35,8 +36,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 //auth
-app.post('/auth/login', loginValidation, UserController.login);
-app.post('/auth/register', registerValidation, UserController.register);
+app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
+app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
 
 //post images
@@ -47,8 +48,14 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 });
 
 //Posts CRUD
-app.post('/posts', checkAuth, postCreateValidation, PostController.create);
-app.patch('/posts/:id', checkAuth, PostController.update);
+app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
+app.patch(
+  '/posts/:id',
+  checkAuth,
+  postCreateValidation,
+  handleValidationErrors,
+  PostController.update,
+);
 app.delete('/posts/:id', checkAuth, PostController.remove);
 
 //Posts get All posts
