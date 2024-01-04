@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import multer from 'multer';
 
 import {
   registerValidation,
@@ -10,18 +11,40 @@ import checkAuth from './utils/checkAuth.js';
 import * as UserController from './controllers/UserController.js';
 import * as PostController from './controllers/PostController.js';
 
+//MongoDB+Mongoose
 mongoose
   .connect('mongodb+srv://admin:123@blog-mern.34ltnbv.mongodb.net/blog?retryWrites=true&w=majority')
   .then(() => console.log('DB OK!'))
   .catch((err) => console.log('DB Error', err));
 
+//Express
 const app = express();
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
+
+//Multer
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, 'uploads');
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
 
 //auth
 app.post('/auth/login', loginValidation, UserController.login);
 app.post('/auth/register', registerValidation, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
+
+//post images
+app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+  res.json({
+    url: `/uploads/${req.file.originalname}`,
+  });
+});
 
 //Posts CRUD
 app.post('/posts', checkAuth, postCreateValidation, PostController.create);
