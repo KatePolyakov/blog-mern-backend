@@ -1,10 +1,14 @@
 import express from 'express';
 import mongoose from 'mongoose';
 
-
-import { registerValidation } from './validations/auth.js';
+import {
+  registerValidation,
+  loginValidation,
+  postCreateValidation,
+} from './validations/validations.js';
 import checkAuth from './utils/checkAuth.js';
-import { register, login, getMe } from './controllers/UserController.js';
+import * as UserController from './controllers/UserController.js';
+import * as PostController from './controllers/PostController.js';
 
 mongoose
   .connect('mongodb+srv://admin:123@blog-mern.34ltnbv.mongodb.net/blog?retryWrites=true&w=majority')
@@ -14,16 +18,25 @@ mongoose
 const app = express();
 app.use(express.json());
 
-app.post('/auth/login', login);
+//auth
+app.post('/auth/login', loginValidation, UserController.login);
+app.post('/auth/register', registerValidation, UserController.register);
+app.get('/auth/me', checkAuth, UserController.getMe);
 
-app.post('/auth/register', registerValidation, register);
+//Posts CRUD
+app.post('/posts', checkAuth, postCreateValidation, PostController.create);
+app.delete('/posts/:id', checkAuth, PostController.remove);
 
-app.get('/auth/me', checkAuth, getMe);
+//Posts get All posts
+app.get('/posts', PostController.getAll);
 
+//Posts get One post
+app.get('/posts/:id', PostController.getOne);
+
+//SERVER
 app.listen(4444, (err) => {
   if (err) {
     return console.log(err);
   }
-
   console.log('Server OK');
 });
