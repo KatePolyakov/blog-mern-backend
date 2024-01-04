@@ -8,8 +8,8 @@ import {
   postCreateValidation,
 } from './validations/validations.js';
 import checkAuth from './utils/checkAuth.js';
-import * as UserController from './controllers/UserController.js';
-import * as PostController from './controllers/PostController.js';
+
+import { PostController, UserController } from './controllers/index.js';
 import handleValidationErrors from './validations/handleValidationErrors.js';
 
 //MongoDB+Mongoose
