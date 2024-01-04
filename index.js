@@ -25,6 +25,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 
 //Posts CRUD
 app.post('/posts', checkAuth, postCreateValidation, PostController.create);
+app.patch('/posts/:id', checkAuth, PostController.update);
 app.delete('/posts/:id', checkAuth, PostController.remove);
 
 //Posts get All posts
