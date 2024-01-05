@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
+import cors from 'cors';
 
 import {
   registerValidation,
@@ -21,6 +22,7 @@ mongoose
 //Express
 const app = express();
 app.use(express.json());
+app.use(cors()); //for cross localhosts
 app.use('/uploads', express.static('uploads'));
 
 //Multer
