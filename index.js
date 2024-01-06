@@ -66,6 +66,10 @@ app.get('/posts', PostController.getAll);
 //Posts get One post
 app.get('/posts/:id', PostController.getOne);
 
+//Get Tags
+app.get('/posts/tags', PostController.getLastTags);
+app.get('/tags', PostController.getLastTags);
+
 //SERVER
 app.listen(4444, (err) => {
   if (err) {
